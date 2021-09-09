@@ -1,0 +1,57 @@
+open up Ganache app via search bar
+
+truffle test --network test
+
+// after updating truffle-config.js to match the 'test' network as specified in the Ganace app
+truffle develop
+migrate --network test
+migrate --reset
+
+
+
+
+
+// i switched over from truffle to openzepplin/hardhat in order to allow for an upradeable contract
+// tutorials i followed:
+https://www.youtube.com/watch?v=bdXJmWajZRY (halfway thru the vid the tutorial starts)
+https://forum.openzeppelin.com/t/openzeppelin-upgrades-step-by-step-tutorial-for-hardhat/3580
+https://docs.openzeppelin.com/upgrades-plugins/1.x/writing-upgradeable#initializers
+https://docs.openzeppelin.com/learn/connecting-to-public-test-networks?pref=hardhat
+https://www.youtube.com/watch?v=yNhV4ifFPb0 // maybe, haven't fully used this one
+https://www.youtube.com/watch?v=yWXyuQng5GA // this one is solid so far, still working thru it 
+
+
+
+// note that i also have to install oppenzeppelin-solidity
+npm install --save-dev @openzeppelin/contracts
+npm install --save-dev @openzeppelin/contracts-upgradeable
+
+
+
+the way i interact with methods on the coin directly are in the "Working on a Testnet" section in https://docs.openzeppelin.com/learn/connecting-to-public-test-networks?pref=hardhat. So, that's theoretically how i can update the liquidity pool address
+
+
+
+// still need to:
+figure out how to add addresses with balance of 0 to my test.js file
+figure out how to redeploy a contract with new code but keep the state of it
+
+
+
+// I ran into an issue where the transfer_ownership.js script wasn't working due to this error:
+// Ownable: caller is not the owner
+// Here is how i fixed it:
+// I made sure the contract extended contracts-upgradeble/access/OwnableUpgradeable.sol.
+// I made sure to call the Ownable unchained ctor in my initialize function
+// I made sure to use the console to interact with the contract, then I called box.owner() to ensure the owner was my account
+// I made sure to delete the .openzeppelin folder prior to me deploying the contract so there wasn't any old state there, then once I deployed the contract with a clean .openzeppelin folder, I was able to run the transfer_ownership.js file fine.
+// I also made sure not to change any code to my contract between the deployment and the transfer of ownership
+
+
+
+
+// Things i can talk about in interview
+// I had to make my contract upgradeable, and there isn't a lot of info on that, so I had to follow a single tutorial and figure it out myself when i ran into problems. Another problem is that I didn't even know "upgradeable" was the term i was looking for until a few days of googling. So i couldn't even find this one tutorial until i figured out the correct keyword that i needed to search for.
+// One example is that i was following the tutorial step by step, and i ran into an issue where a step in the tutorial wouldn't work. So, it took me a few days of googling but i eventually found some obscure information in an issue that wasn't even related to my issue that pointed me in the right direction of how to solve my problem. I was able to get past that step in the tutorial
+// I wanted to implement some sort of interest system as well as a coin burning mechanism, and there aren't many tutorials on that, so i came up with my own architecture to store all of the users and give them interest. I had to work around the limitations of the solidity language, so i had to combine a hashmap with an array to properly give interest to every registered user
+// 

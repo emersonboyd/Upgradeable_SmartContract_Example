@@ -1,9 +1,9 @@
 // scripts/deploy.js
 async function main() {
-    const Ftb = await ethers.getContractFactory("ForTheBoysContract");
-    console.log("Deploying Ftb proxy, implementation, and proxy admin...");
-    const ftb = await upgrades.deployProxy(Ftb, [], { initializer: 'initialize' });
-    console.log("FtbProxy deployed to:", ftb.address);
+    const MyContract = await ethers.getContractFactory("MyUpgradeableContract");
+    console.log("Deploying MyContract proxy, implementation, and proxy admin...");
+    const myContract = await upgrades.deployProxy(MyContract, [], { initializer: 'initialize' });
+    console.log("MyContract deployed to:", myContract.address);
   }
   
   main()

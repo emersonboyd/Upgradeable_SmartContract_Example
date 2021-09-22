@@ -4,7 +4,7 @@ pragma solidity 0.8.5;
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
-contract ForTheBoysContract is ERC20BurnableUpgradeable, OwnableUpgradeable
+contract MyUpgradeableContract is ERC20BurnableUpgradeable, OwnableUpgradeable
 {
     uint8 private constant _decimalsImpl = 18;
 
@@ -33,7 +33,7 @@ contract ForTheBoysContract is ERC20BurnableUpgradeable, OwnableUpgradeable
     function initialize() public initializer
     {
         __Context_init_unchained();
-        __ERC20_init_unchained("ForTheBoys", "FTB");
+        __ERC20_init_unchained("MyContract", "MyC"); // contract name and ticker
         __ERC20Burnable_init_unchained();
         __Ownable_init_unchained();
 

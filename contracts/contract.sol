@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT TODO change license if we want
+// SPDX-License-Identifier: MIT
 pragma solidity 0.8.5;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable.sol";
@@ -118,7 +118,6 @@ contract MyUpgradeableContract is ERC20BurnableUpgradeable, OwnableUpgradeable
 
     function transfer(address recipient, uint256 amount) public override returns (bool)
     {
-        // TODO these requirements are from the base class, but i need them to be called before burining
         require(_msgSender() != address(0), "ERC20: transfer from the zero address");
         require(recipient != address(0), "ERC20: transfer to the zero address");
         require(balanceOf(_msgSender()) >= amount);
@@ -137,7 +136,6 @@ contract MyUpgradeableContract is ERC20BurnableUpgradeable, OwnableUpgradeable
 
     function transferFrom(address sender, address recipient, uint256 amount) public override returns (bool)
     {
-        // TODO these requirements are from the base class, but i need them to be called before burining
         require(sender != address(0), "ERC20: transfer from the zero address");
         require(recipient != address(0), "ERC20: transfer to the zero address");
         require(balanceOf(sender) >= amount);

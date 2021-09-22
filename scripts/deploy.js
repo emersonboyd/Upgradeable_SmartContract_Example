@@ -3,7 +3,7 @@ async function main() {
     const MyContract = await ethers.getContractFactory("MyUpgradeableContract");
     console.log("Deploying MyContract proxy, implementation, and proxy admin...");
     const myContract = await upgrades.deployProxy(MyContract, [], { initializer: 'initialize' });
-    console.log("MyContract deployed to:", myContract.address);
+    console.log("MyContract proxy deployed to:", myContract.address);
   }
   
   main()

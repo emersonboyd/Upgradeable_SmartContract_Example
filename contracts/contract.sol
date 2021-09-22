@@ -4,15 +4,36 @@ pragma solidity 0.8.5;
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
+/**
+ * This class provides an example upgradeable smart contract with the following features:
+ *     - adheres to the ERC20 token standard
+ *     - applies a 10% transaction fee: 5% gone forever (burned) and 5% transferred to a liquidity pool
+ *     - applies 10% annual interest for holders, compounded annualy
+ *     - is upgradeable using OpenZeppelin's upgradeable contract model
+ *
+ * There will be comments throughout this file explaining the logic/reasoning behind each design choice
+ * to help guide you in learning about smart contracts.
+ *
+ * You can see the source code for the base contracts at https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable.
+ **/
 contract MyUpgradeableContract is ERC20BurnableUpgradeable, OwnableUpgradeable
 {
+    /**
+     * Indicates the precision of quantity traded for this token. 18 is standard.
+     *
+     * Let's say this number were 2. Whenever you see '1025' being traded, minted,
+     * an so on within this file, that really means that 10.25 tokens are minted.
+     *
+     * That is why in the initializer of this contract, we are initializing 1 trillion * 10^18 tokens.
+     **/
     uint8 private constant _decimalsImpl = 18;
 
+    // Your contract should override this function to adhere to ERC20 standard.
     function decimals() public view virtual override returns (uint8) {
         return _decimalsImpl;
     }
 
-    address private _minter;
+    address private _minter; // save the address of the person who created this contract to allow for minter-only actions
     uint256 private _lastMintTime;
     uint256 private constant _mintIntervalSeconds = 604800; // one week
     uint256 private constant _oneYearSeconds = 31536000; // one year
@@ -21,17 +42,18 @@ contract MyUpgradeableContract is ERC20BurnableUpgradeable, OwnableUpgradeable
     uint256 private constant _interestDivisorPerYear = 10; // 1/10 additional interest per year
     uint256 private constant _interestDivisorPerInterval = _interestDivisorPerYear * _numIntervalsPerYear;
 
-    uint256 private constant _burnDivisor = 20; // 1/20 total burn amount (5% to LP, 5% gonezo)
-    uint256 private constant _liquidateDivisor = 20; // 1/20 total liquidate amount (5% to LP, 5% gonezo)
+    uint256 private constant _burnDivisor = 20; // 1/20 total burn amount (5% gone forever)
+    uint256 private constant _liquidateDivisor = 20; // 1/20 total liquidate amount (5% to LP)
 
     mapping (address => bool) private _existingUsers;
-    address[] private _orderedUsers; // ordered by creation of user address
+    address[] private _orderedUsers; // ordered by creation of user address to allow for interest over all users
 
-    address private _liquidityPoolAddress;
+    address private _liquidityPoolAddress; // once liquidity pool address is known, should be set via SetLiquidityPoolAddresss()
 
     // Upgradeable contracts cannot have constructors, so an initializer method must be written to "construct" the contract
     function initialize() public initializer
     {
+        // Call all of the base classes initializers of this contract, starting with the most base class first
         __Context_init_unchained();
         __ERC20_init_unchained("MyContract", "MyC"); // contract name and ticker
         __ERC20Burnable_init_unchained();
@@ -44,18 +66,13 @@ contract MyUpgradeableContract is ERC20BurnableUpgradeable, OwnableUpgradeable
         _mint(_minter, startingSupply);
         _lastMintTime = nowSeconds();
 
+        // should be changed after contract deployment to the true liquidity pool address
         _liquidityPoolAddress = _minter;
     }
 
     function getSecondsSinceLastMint() private view returns (uint256)
     {
         return nowSeconds() - _lastMintTime;
-    }
-
-    // This function returns the multiplier taking into account the decimals
-    function getInterestMultiplierSinceLastMint() private view returns (uint256)
-    {
-        return _interestMultiplierPerYear * getSecondsSinceLastMint() / _oneYearSeconds;
     }
 
     function shouldMint() private view returns (bool)
@@ -101,7 +118,7 @@ contract MyUpgradeableContract is ERC20BurnableUpgradeable, OwnableUpgradeable
         return liquidateAmount;
     }
 
-    function getRemovalAmount(uint256 amount) private pure returns (uint256, uint256)
+    function getFeeAmount(uint256 amount) private pure returns (uint256, uint256)
     {
         uint256 burnAmount = getBurnAmount(amount);
         uint256 liquidateAmount = getLiquidateAmount(amount);
@@ -122,7 +139,8 @@ contract MyUpgradeableContract is ERC20BurnableUpgradeable, OwnableUpgradeable
         require(recipient != address(0), "ERC20: transfer to the zero address");
         require(balanceOf(_msgSender()) >= amount);
 
-        (uint256 burnAmount, uint256 liquidateAmount) = getRemovalAmount(amount);
+        // apply fees for the transaction
+        (uint256 burnAmount, uint256 liquidateAmount) = getFeeAmount(amount);
         uint256 removalAmount = burnAmount + liquidateAmount;
         amount -= removalAmount;
         burn(burnAmount);
@@ -141,7 +159,8 @@ contract MyUpgradeableContract is ERC20BurnableUpgradeable, OwnableUpgradeable
         require(balanceOf(sender) >= amount);
         require(allowance(sender, _msgSender()) >= amount, "ERC20: transfer amount exceeds allowance");
 
-        (uint256 burnAmount, uint256 liquidateAmount) = getRemovalAmount(amount);
+        // apply fees for the transaction
+        (uint256 burnAmount, uint256 liquidateAmount) = getFeeAmount(amount);
         uint256 removalAmount = burnAmount + liquidateAmount;
         amount -= removalAmount;
         burnFrom(sender, burnAmount);

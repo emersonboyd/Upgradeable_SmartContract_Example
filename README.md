@@ -21,7 +21,9 @@ Please read [this article](https://docs.openzeppelin.com/upgrades-plugins/1.x/wr
 
 You should have access to a Metamask wallet. You do not need any funds to start.
 
-In addition, npm must be installed on your machine.
+You will be deploying your contract on Rinkeby network. Make sure the Rinkeby network is up. If you can access [this link](https://www.rinkeby.io), you should be good to go.
+
+Finally, npm must be installed on your machine.
 
 #### Linux:
 

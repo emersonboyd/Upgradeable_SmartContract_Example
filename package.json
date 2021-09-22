@@ -1,7 +1,6 @@
 {
   "name": "FtbHardhatZeppelin",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,5 +16,18 @@
     "chai": "^4.3.4",
     "ethers": "^5.4.3",
     "hardhat": "^2.5.0"
-  }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emersonboyd/UpgradeableContractExample.git"
+  },
+  "bugs": {
+    "url": "https://github.com/emersonboyd/UpgradeableContractExample/issues"
+  },
+  "homepage": "https://github.com/emersonboyd/UpgradeableContractExample#readme",
+  "description": ""
 }

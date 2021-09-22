@@ -41,7 +41,7 @@ Install homebrew through the instruction at this link: https://brew.sh/
 
 `cd UpgradeableContractExample`
 
-`npm install --save-dev # installs packages listed in package.json`
+`npm install --save-dev` installs packages listed in package.json
 
 ### Create secrets.json to store network/private keys
 
@@ -50,13 +50,15 @@ You need to create a secrets.json file in your repo’s top-level folder. This f
 ```
 {
   "key": "xxxxxxx",
+  "moralisBscTestnetUrl": "https://speedy-nodes-nyc.moralis.io/99cc68aa0fa3ad3533303a17/bsc/testnet",
+  "moralisBscMainnetUrl": "https://speedy-nodes-nyc.moralis.io/99cc68aa0fa3ad3533303a17/bsc/mainnet",
   "moralisRinkebyUrl": "https://speedy-nodes-nyc.moralis.io/99cc68aa0fa3ad3533303a17/eth/rinkeby"
 }
 ```
 
 Keep this file completely private and do not commit it to any git repo! If others gain access to your private key, they can access your real-life funds.
 
-This secrets.json file tells your deployment script a) which account should perform the deployment and b) where the contract should be deployed (in our case, it’s on the Rinkeby Ethereum test network).
+This secrets.json file tells your deployment script a) which account should perform the deployment and b) the url through which the contract should be deployed (in our use case, it’s on the moralisRinkebyUrl).
 
 ## Steps to Develop/Test Coin:
 
@@ -72,7 +74,7 @@ You can run the example tests that are provided by doing the following:
 These steps will demonstrate how to deploy the smart contract on an Ethereum test network (Rinkeby). Steps for deploying the token on the Ethereum Mainnet and Binance Smart Chain are very similar.
 
 1) Fund your wallet with fake Rinkeby Ether by following the steps [here](https://faucet.rinkeby.io/).
-2) Deploy the proxy and implementation contracts by running the command `npx hardhat run --network moralisRinkebyUrl scripts/deploy.js`. Keep track of the address of the deployed proxy token. You will need it later.
+2) Deploy the proxy and implementation contracts by running the command `npx hardhat run --network moralisRinkeby scripts/deploy.js`. This command may take awhile. Keep track of the address of the deployed proxy token. You will need it later.
 
 Congratulations, your contract is now deployed! If you want to interact with the methods in your contract via the console, you can look at the ‘Interacting with your Coin’ section of this page to see how to interact with the contract.
 
@@ -80,12 +82,12 @@ Now that your contract has been deployed, you need to setup the ability to upgra
 1) Follow the steps to set up a Gnosis safe [here](https://help.gnosis-safe.io/en/articles/3876461-create-a-safe). Make sure your safe is set up for the Rinkeby network.
 2) Copy the address of the newly-created safe. This is not your wallet address, but the address on Gnosis listed under your safe’s name.
 3) Go into the `scripts/transfer_ownership.js` file and modify the `gnosisSafe` address to match your newly-created Gnosis safe address.
-4) Run `npx hardhat run --network rinkeby scripts/transfer_ownership.js`. If you have problems with this command, read the 'Common Issues' section below.
+4) Run `npx hardhat run --network moralisRinkeby scripts/transfer_ownership.js`. If you have problems with this command, read the 'Common Issues' section below.
 
 Your contract is now ready to upgrade and re-deploy. Once you have modified some code in your contract and want to re-deploy it, follow these steps:
 
 1) Go into `scripts/prepare_upgrade.js` and modify the `proxyAddress` to match the address of your deployed token.
-2) Execute `npx hardhat run --network rinkeby scripts/prepare_upgrade.js`. Keep track of this new implementation address.
+2) Execute `npx hardhat run --network moralisRinkeby scripts/prepare_upgrade.js`. Keep track of this new implementation address.
 3) Complete the upgrade in Gnosis Safe. Go to the Apps pane in Gnosis Safe and find the OpenZeppelin app.
 4) Plug in the proxy address from your initial deployment in the “Contract address” box.
 5) Plug in the newly-deployed implementation address in the “New implementation address” box.

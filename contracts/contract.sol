@@ -4,14 +4,6 @@ pragma solidity 0.8.5;
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
-// TODO test scenarios:
-// - test that interest won't be accrued for people who hold < a certain amount of FTB
-// - test that burning works properly even if someone sends a very very small amount of FTB (penalize them more, if necesssary, for sending a small amount). We can't allow the coint to be exploitable by sending multiple very small amounts to equal one large amount without burn.
-// - make sure that override of _beforeTokenTransfer gets called before minting, burning, transfer() and transferFrom() IMPORTANT that it works for both i think cause i'm not sure the situations in which one gets called over another
-// - test how the require() and assert() functions differ, and make sure each one does its task
-// - figure out how transferFrom is different than transfer
-// - figure out unchained initialization vs. chained
-
 contract ForTheBoysContract is ERC20BurnableUpgradeable, OwnableUpgradeable
 {
     uint8 private constant _decimalsImpl = 18;

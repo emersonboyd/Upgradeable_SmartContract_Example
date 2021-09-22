@@ -8,7 +8,7 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
  * This class provides an example upgradeable smart contract with the following features:
  *     - adheres to the ERC20 token standard
  *     - applies a 10% transaction fee: 5% gone forever (burned) and 5% transferred to a liquidity pool
- *     - applies 10% annual interest for holders, compounded annualy
+ *     - applies roughly 10% annual interest for holders, compounded annualy
  *     - is upgradeable using OpenZeppelin's upgradeable contract model
  *
  * There will be comments throughout this file explaining the logic/reasoning behind each design choice

@@ -39,15 +39,15 @@ Install homebrew through the instruction at this link: https://brew.sh/
 
 ### Initialize repository and download dependencies
 
-`git clone https://github.com/emersonboyd/UpgradeableContractExample.git`
+`git clone https://github.com/emersonboyd/Upgradeable_SmartContract_Example.git`
 
-`cd UpgradeableContractExample`
+`cd Upgradeable_SmartContract_Example`
 
 `npm install --save-dev` installs packages listed in package.json
 
 ### Create secrets.json to store network/private keys
 
-You need to create a secrets.json file in your repo’s top-level folder. This file should contain the lines of code listed below. You will need to replace the x’s with your wallet private key. You can access the private key of your Metamask wallet using [this method]( https://metamask.zendesk.com/hc/en-us/articles/360015289632-How-to-Export-an-Account-Private-Key).
+You need to create a file called `secrets.json` in your repo’s top-level folder. This file should contain the lines of code listed below. You will need to replace the x’s with your wallet private key. You can access the private key of your Metamask wallet using [this method]( https://metamask.zendesk.com/hc/en-us/articles/360015289632-How-to-Export-an-Account-Private-Key).
 
 ```
 {
@@ -75,26 +75,26 @@ You can run the example tests that are provided by doing the following:
 ## Steps to Deploy Coin:
 These steps will demonstrate how to deploy the smart contract on an Ethereum test network (Rinkeby). Steps for deploying the token on the Ethereum Mainnet and Binance Smart Chain are very similar.
 
-1) Fund your wallet with fake Rinkeby Ether by following the steps [here](https://faucet.rinkeby.io/).
+1) Fund your wallet with fake Rinkeby Ether by following the steps [here](https://faucet.rinkeby.io/). You need about 0.02 ETH to complete this tutorial. If the above facuet is not working, try [this one](https://app.mycrypto.com/faucet).
 2) Deploy the proxy and implementation contracts by running the command `npx hardhat run --network moralisRinkeby scripts/deploy.js`. This command may take awhile. Keep track of the address of the deployed proxy token. You will need it later.
 
 Congratulations, your contract is now deployed! If you want to interact with the methods in your contract via the console, you can look at the ‘Interacting with your Coin’ section of this page to see how to interact with the contract.
 
 Now that your contract has been deployed, you need to setup the ability to upgrade it. In order to do so, you need to transfer ownership of your smart contract to a Gnosis safe.
-1) Follow the steps to set up a Gnosis safe [here](https://help.gnosis-safe.io/en/articles/3876461-create-a-safe). Make sure your safe is set up for the Rinkeby network.
+1) Follow the steps to set up a Gnosis safe [here](https://help.gnosis-safe.io/en/articles/3876461-create-a-safe). Make sure your safe is set up for the Rinkeby network by clicking 'Mainnet' in the top right and switching to 'Rinkeby' prior to completing these steps.
 2) Copy the address of the newly-created safe. This is not your wallet address, but the address on Gnosis listed under your safe’s name.
 3) Go into the `scripts/transfer_ownership.js` file and modify the `gnosisSafe` address to match your newly-created Gnosis safe address.
 4) Run `npx hardhat run --network moralisRinkeby scripts/transfer_ownership.js`. If you have problems with this command, read the 'Common Issues' section below.
 
 Your contract is now ready to upgrade and re-deploy. Once you have modified some code in your contract and want to re-deploy it, follow these steps:
 
-1) Go into `scripts/prepare_upgrade.js` and modify the `proxyAddress` to match the address of your deployed token.
+1) Go into `scripts/prepare_upgrade.js` and modify the `proxyAddress` to match the address of your deployed token (not the Gnosis safe address).
 2) Execute `npx hardhat run --network moralisRinkeby scripts/prepare_upgrade.js`. Keep track of this new implementation address.
 3) Complete the upgrade in Gnosis Safe. Go to the Apps pane in Gnosis Safe and find the OpenZeppelin app.
 4) Plug in the proxy address from your initial deployment in the “Contract address” box.
 5) Plug in the newly-deployed implementation address in the “New implementation address” box.
 6) Press the “Upgrade” button, double check the information, and click the “Submit” button.
-7) Sign off on the upgrade via Metamask.
+7) Sign off on the upgrade via Metamask. It may take 10-20 seconds before you see a notification that the upgrade was successful.
 
 Congratulations, you have upgraded your smart contract! If you want to do console-level interaction with the contract as suggested before, you’ll just need to use the proxy address again. You won’t need the new implementation address anymore.
 

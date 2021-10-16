@@ -6,7 +6,7 @@ let MyContract;
 let myContract;
  
 // Start test block
-describe('Ftb', function () {
+describe('MyContract Implementation Tests', function () {
   beforeEach(async function () {
     MyContract = await ethers.getContractFactory("MyUpgradeableContract");
     myContract = await MyContract.deploy(); // deploys the implementation contract

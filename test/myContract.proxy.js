@@ -6,7 +6,7 @@ let MyContract;
 let myContract;
 
 // Start test block
-describe('MyContract', function () {
+describe('MyContract Proxy Tests', function () {
   beforeEach(async function () {
     MyContract = await ethers.getContractFactory("MyUpgradeableContract");
     myContract = await upgrades.deployProxy(MyContract, [], {initializer: 'initialize'}); // deploys the proxy contract
